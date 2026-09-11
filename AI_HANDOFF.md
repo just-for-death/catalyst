@@ -219,7 +219,7 @@ flutter run -d linux
 
 Full prior chat JSONL (tool calls excluded from some views):
 
-`/home/zoro/.cursor/projects/home-zoro-Documents-Projects-catalyst/agent-transcripts/43d44f93-525a-4bb2-b5ec-a34b6ae8940c/`
+`(transcript path removed)`
 
 Search that transcript for filenames, “offline”, “ReaderSession”, “Usagi”, “Codemagic”, “version 7” if reconstructing older decisions.
 
