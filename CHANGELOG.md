@@ -2,6 +2,17 @@
 
 All notable changes to the **Catalyst** manga reader project will be documented in this file.
 
+## [8.0.1] - 2026-09-30
+
+### Fixed
+- **Updates pagination**: corrected `first`/`offset` stride mismatch that caused overlapping pages and duplicates.
+- **Reader**: clamped slider jumps, guarded debounced progress saves per chapter, gated history-unhide on history setting.
+- **Downloads**: fixed FAB visibility predicate, kept local-download success state visible, merged REST snapshot with WS updates.
+- **Search**: scoped rate-limit queues (`global:`/`migration:`) with faster throughput (6 parallel / 200ms).
+- **Tracking**: auth changes invalidate cached records; bind errors distinguish login-required vs empty collection.
+- **Settings**: backup restore refreshes settings/library/history/trackers.
+- **Layout**: tablet detail constrained to 1100px, source chips scroll horizontally, 48px touch targets, tonal status colors, true-black glass app bars.
+
 ## [8.0.0] - 2026-08-14
 
 ### Added
