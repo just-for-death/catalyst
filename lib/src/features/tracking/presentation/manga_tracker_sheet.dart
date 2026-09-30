@@ -165,6 +165,11 @@ class MangaTrackerSheet extends ConsumerWidget {
                                   imageUrl: tracker.icon,
                                   width: 32,
                                   height: 32,
+                                  placeholder: (_, __) => const SizedBox.square(
+                                    dimension: 32,
+                                    child: ColoredBox(
+                                        color: Color(0xFFE0E0E0)),
+                                  ),
                                   errorWidget: (_, __, ___) =>
                                       const Icon(Icons.track_changes_rounded),
                                 ),

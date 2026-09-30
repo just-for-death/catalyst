@@ -261,12 +261,15 @@ class _TrackerSearchResultTile extends ConsumerWidget {
     } catch (e) {
       if (context.mounted) {
         final err = e.toString();
-        final msg = err.contains('401') ||
-                err.contains('Unauthorized') ||
-                err.contains('Not logged in') ||
-                err.contains('Collection is empty')
+        final isAuth = err.contains('401') ||
+            err.contains('Unauthorized') ||
+            err.contains('Not logged in');
+        final isEmpty = err.contains('Collection is empty');
+        final String msg = isAuth
             ? context.l10n.trackingBindLoginRequired(trackerName)
-            : userFacingError(context, e);
+            : isEmpty
+                ? context.l10n.trackingBindEmptyCollection(trackerName)
+                : userFacingError(context, e);
         ref.read(toastProvider)?.showError(msg);
       }
     }

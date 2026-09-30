@@ -27,7 +27,9 @@ Future<List<MangaDto>> sourceQuickSearchMangaList(
   String sourceId, {
   String? query,
 }) async {
-  final rateLimiterQueue = ref.watch(rateLimitQueueProvider(query));
+  // Scope the queue key so global-search and migration-search with the same
+  // text do not contend on one shared Queue instance (head-of-line blocking).
+  final rateLimiterQueue = ref.watch(rateLimitQueueProvider('global:$query'));
   final mangaPage = await rateLimiterQueue
       .add(() => ref.watch(sourceRepositoryProvider).fetchSourceManga(
             page: 1,

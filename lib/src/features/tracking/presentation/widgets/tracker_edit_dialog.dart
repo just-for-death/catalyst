@@ -312,6 +312,10 @@ class TrackerEditDialog extends HookConsumerWidget {
   }
 
   DateTime _parseDate(String s) {
+    // Empty or corrupt tracker dates must not coerce to today — that would
+    // silently overwrite the record on the next Save. Fall back to today only
+    // as the picker's initial date, never as a value to persist.
+    if (s.trim().isEmpty) return DateTime.now();
     try {
       return DateTime.parse(s);
     } catch (_) {

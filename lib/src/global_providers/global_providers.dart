@@ -212,8 +212,8 @@ HiveStore hiveStore(Ref ref) => throw UnimplementedError();
 @riverpod
 Queue rateLimitQueue(Ref ref, [String? query]) {
   final queue = Queue(
-    parallel: 3,
-    delay: const Duration(milliseconds: 500),
+    parallel: 6,
+    delay: const Duration(milliseconds: 200),
   );
   ref.onDispose(() {
     queue.cancel();

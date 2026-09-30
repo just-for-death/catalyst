@@ -82,7 +82,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
           // type switch), so a late response must not touch it.
           try {
             if (recentMangaPage != null) {
-              if (recentMangaPage.hasNextPage.ifNull()) {
+              if (recentMangaPage.hasNextPage.ifNull(false)) {
                 controller.appendPage(
                   [...recentMangaPage.mangas],
                   pageKey + 1,
@@ -153,30 +153,36 @@ class SourceMangaListScreen extends HookConsumerWidget {
             preferredSize: kCalculateAppBarBottomSize([true, showSearch.value]),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    SourceTypeSelectableChip(
-                      value: SourceType.POPULAR,
-                      groupValue: sourceType,
-                      onSelected: (val) =>
-                          _switchSourceType(context, ref, SourceType.POPULAR),
-                    ),
-                    if ((data?.supportsLatest).ifNull())
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
                       SourceTypeSelectableChip(
-                        value: SourceType.LATEST,
+                        value: SourceType.POPULAR,
                         groupValue: sourceType,
                         onSelected: (val) =>
-                            _switchSourceType(context, ref, SourceType.LATEST),
+                            _switchSourceType(context, ref, SourceType.POPULAR),
                       ),
-                    Builder(
-                      builder: (context) => SourceTypeSelectableChip(
-                        value: SourceType.SEARCH,
-                        groupValue: sourceType,
-                        onSelected: (val) =>
-                            _switchSourceType(context, ref, SourceType.SEARCH),
+                      const SizedBox(width: 4),
+                      if ((data?.supportsLatest).ifNull())
+                        SourceTypeSelectableChip(
+                          value: SourceType.LATEST,
+                          groupValue: sourceType,
+                          onSelected: (val) => _switchSourceType(
+                              context, ref, SourceType.LATEST),
+                        ),
+                      if ((data?.supportsLatest).ifNull())
+                        const SizedBox(width: 4),
+                      Builder(
+                        builder: (context) => SourceTypeSelectableChip(
+                          value: SourceType.SEARCH,
+                          groupValue: sourceType,
+                          onSelected: (val) => _switchSourceType(
+                              context, ref, SourceType.SEARCH),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const Divider(height: 0),
                 if (showSearch.value)

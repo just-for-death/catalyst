@@ -41,6 +41,8 @@ class UpdatesScreen extends HookConsumerWidget {
             } else {
               controller.appendLastPage([...page.nodes]);
             }
+          } else {
+            controller.appendLastPage([]);
           }
         },
         error: (e, _) => controller.error = e,

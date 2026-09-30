@@ -86,6 +86,7 @@ class ReaderScreen extends HookConsumerWidget {
 
     final debounce = useRef<Timer?>(null);
     final pendingPageIndex = useRef<int?>(null);
+    final pendingChapterId = useRef<int?>(null);
     final lastFlushedPage = useRef<int?>(null);
     final resumeHintShown = useRef(false);
 
@@ -139,10 +140,14 @@ class ReaderScreen extends HookConsumerWidget {
 
       container.invalidate(chapterProvider(chapterId: chapterValue.id));
       pendingPageIndex.value = null;
+      pendingChapterId.value = null;
 
-      container.read(historyHiddenChapterIdsProvider.notifier).unhideChapter(
-            chapterValue.id,
-          );
+      final historyEnabled = container.read(historyEnabledProvider) ?? true;
+      if (historyEnabled) {
+        container.read(historyHiddenChapterIdsProvider.notifier).unhideChapter(
+              chapterValue.id,
+            );
+      }
 
       if (isReadingCompleted) {
         // Only on completion: every debounced page save runs through here, and
@@ -186,6 +191,7 @@ class ReaderScreen extends HookConsumerWidget {
         try {
           debounce.value?.cancel();
           final pending = pendingPageIndex.value;
+          final pendingCid = pendingChapterId.value;
           // Mid-chapter progress is saved to the server but only completion
           // refreshes the home/history views, so refresh on exit too — after
           // the final flush, so it reads the saved value rather than a stale one.
@@ -196,11 +202,21 @@ class ReaderScreen extends HookConsumerWidget {
           }
 
           if (pending != null) {
-            final flush =
-                updateLastReadRef.value?.call(pending) ?? Future.value();
-            // Only on success: refreshing after a failed save would just refetch
-            // the stale server state.
-            unawaited(flush.then((_) => refreshHistory(), onError: (_, __) {}));
+            // Generation guard: only flush if the pending page still belongs
+            // to this screen's chapter. pushReplacement creates a new screen
+            // per chapter, so a mismatch means stale state — discard.
+            if (pendingCid != null && pendingCid != chapterId) {
+              pendingPageIndex.value = null;
+              pendingChapterId.value = null;
+              refreshHistory();
+            } else {
+              final flush =
+                  updateLastReadRef.value?.call(pending) ?? Future.value();
+              // Only on success: refreshing after a failed save would just refetch
+              // the stale server state.
+              unawaited(
+                  flush.then((_) => refreshHistory(), onError: (_, __) {}));
+            }
           } else {
             refreshHistory();
           }
@@ -246,6 +262,7 @@ class ReaderScreen extends HookConsumerWidget {
         if (chapterValue == null || chapterPagesValue == null) return;
 
         pendingPageIndex.value = index;
+        pendingChapterId.value = chapterValue.id;
 
         final activeDebounce = debounce.value;
         if (activeDebounce?.isActive ?? false) {

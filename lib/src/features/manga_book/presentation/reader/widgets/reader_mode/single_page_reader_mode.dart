@@ -99,7 +99,11 @@ class SinglePageReaderMode extends HookConsumerWidget {
             ? SpreadPageUtils.pagesInSpread(spread, chapterPages.pages.length)
             : (spread >= 0 && spread < chapterPages.pages.length ? [spread] : []);
         for (final page in indices) {
-          cacheManager.getServerFile(ref, chapterPages.pages[page]);
+          // Fire-and-forget warm of the image cache; failures are expected
+          // offline and must not surface as unhandled async errors.
+          cacheManager
+              .getServerFile(ref, chapterPages.pages[page])
+              .then((_) {}, onError: (_, __) {});
         }
       }
       return null;
@@ -160,11 +164,17 @@ class SinglePageReaderMode extends HookConsumerWidget {
         ref.read(readerScrollAnimationProvider).ifNull(true);
 
     void jumpToLogicalPage(int pageIndex) {
+      if (chapterPages.pages.isEmpty || pageCount <= 0) return;
+      final clamped = pageIndex.clamp(0, pageCount - 1);
       final target = spreadEnabled
-          ? SpreadPageUtils.spreadIndexForPage(pageIndex)
-          : pageIndex;
+          ? SpreadPageUtils.spreadIndexForPage(clamped)
+          : clamped;
+      if (!scrollController.hasClients) {
+        currentIndex.value = clamped;
+        return;
+      }
       scrollController.jumpToPage(target);
-      currentIndex.value = pageIndex;
+      currentIndex.value = clamped;
     }
 
     return ReaderWrapper(

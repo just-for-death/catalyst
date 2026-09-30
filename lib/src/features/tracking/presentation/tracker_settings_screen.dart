@@ -71,6 +71,14 @@ class _TrackerTile extends ConsumerWidget {
           width: 44,
           height: 44,
           fit: BoxFit.cover,
+          placeholder: (_, __) => Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: context.theme.colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ),
           errorWidget: (_, __, ___) => Container(
             width: 44,
             height: 44,
@@ -95,7 +103,7 @@ class _TrackerTile extends ConsumerWidget {
                 : Icons.radio_button_unchecked_rounded,
             size: 14,
             color: tracker.isLoggedIn
-                ? Colors.green
+                ? context.theme.colorScheme.primary
                 : context.theme.colorScheme.outline,
           ),
           const SizedBox(width: 4),
@@ -105,7 +113,7 @@ class _TrackerTile extends ConsumerWidget {
                 : context.l10n.notLoggedIn,
             style: context.textTheme.bodySmall?.copyWith(
               color: tracker.isLoggedIn
-                  ? Colors.green
+                  ? context.theme.colorScheme.primary
                   : context.theme.colorScheme.outline,
             ),
           ),

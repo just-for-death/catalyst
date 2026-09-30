@@ -35,7 +35,7 @@ class UpdatesRepository {
                 filter: Input$ChapterFilterInput(
                   inLibrary: Input$BooleanFilterInput(equalTo: true),
                 ),
-                first: 50,
+                first: 30,
                 offset: pageNo * 30,
                 order: [
                   Input$ChapterOrderInput(

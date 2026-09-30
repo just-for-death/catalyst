@@ -270,10 +270,11 @@ class MangaComparisonWidget extends StatelessWidget {
           const SizedBox(height: 8),
 
           // Match indicators
-          Row(
+          Wrap(
+            spacing: 16,
+            runSpacing: 8,
             children: [
               _buildMatchIndicator(context, 'Title', titleMatch),
-              const SizedBox(width: 16),
               _buildMatchIndicator(context, 'Author', authorMatch),
             ],
           ),
@@ -289,13 +290,13 @@ class MangaComparisonWidget extends StatelessWidget {
     IconData icon;
 
     if (score >= 0.8) {
-      color = Colors.green;
+      color = theme.colorScheme.primary;
       icon = Icons.check_circle;
     } else if (score >= 0.5) {
-      color = Colors.orange;
+      color = theme.colorScheme.tertiary;
       icon = Icons.warning;
     } else {
-      color = Colors.red;
+      color = theme.colorScheme.error;
       icon = Icons.error;
     }
 

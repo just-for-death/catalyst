@@ -57,9 +57,10 @@ class DownloadProgressBanner extends HookConsumerWidget {
                 TextButton(
                   onPressed: () => const DownloadsRoute().go(context),
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8),
+                    minimumSize: const Size(48, 48),
+                    tapTargetSize: MaterialTapTargetSize.padded,
                   ),
                   child: Text(
                     context.l10n.downloads,

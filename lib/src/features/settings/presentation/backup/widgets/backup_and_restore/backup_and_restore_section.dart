@@ -10,7 +10,11 @@ import '../../../../../../utils/misc/toast/toast.dart';
 import '../../../../../../utils/misc/user_facing_error.dart';
 import '../../../../../../widgets/section_title.dart';
 import '../../../../../../widgets/settings/adaptive_list_tile.dart';
+import '../../../../../history/presentation/history_controller.dart';
+import '../../../../../library/presentation/category/controller/edit_category_controller.dart';
+import '../../../../../tracking/presentation/controller/tracker_controller.dart';
 import '../../../../domain/settings/settings.dart';
+import '../../../../controller/server_controller.dart';
 import '../../data/backup_settings_repository.dart';
 import 'widgets/backup_missing_dialog.dart';
 import 'widgets/create_backup_dialog.dart';
@@ -135,6 +139,13 @@ class BackupAndRestoreSection extends HookConsumerWidget {
                         withMicrotask: true,
                         instantShow: true,
                       );
+                      // Restore replaces server-side settings, library,
+                      // history and tracker bindings — refresh all scopes so
+                      // the UI does not keep showing the pre-restore snapshot.
+                      ref.invalidate(settingsProvider);
+                      ref.invalidate(categoryControllerProvider);
+                      ref.invalidate(readingHistoryProvider);
+                      ref.invalidate(trackersProvider);
                     }
                     restoreId.value = null;
                   },

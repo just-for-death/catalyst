@@ -90,25 +90,40 @@ class ChapterListTile extends StatelessWidget {
         ),
         subtitle: Row(
           children: [
-            Text(
-              int.tryParse(chapter.uploadDate).toDaysAgo(context),
-              style: TextStyle(
-                color: chapter.isRead.ifNull() ? Colors.grey : null,
+            Flexible(
+              child: Text(
+                int.tryParse(chapter.uploadDate).toDaysAgo(context),
+                style: TextStyle(
+                  color: chapter.isRead.ifNull()
+                      ? context.theme.colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.6)
+                      : null,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             if (!chapter.isRead.ifNull() &&
                 (chapter.lastPageRead).getValueOnNullOrNegative() != 0)
-              Text(
-                " • ${context.l10n.page(chapter.lastPageRead.getValueOnNullOrNegative() + 1)}",
-                style: const TextStyle(color: Colors.grey),
-                overflow: TextOverflow.ellipsis,
+              Flexible(
+                child: Text(
+                  " • ${context.l10n.page(chapter.lastPageRead.getValueOnNullOrNegative() + 1)}",
+                  style: TextStyle(
+                      color: context.theme.colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.6)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             if (chapter.scanlator.isNotBlank)
               Expanded(
                 child: Text(
                   " • ${chapter.scanlator}",
                   style: TextStyle(
-                    color: chapter.isRead.ifNull() ? Colors.grey : null,
+                    color: chapter.isRead.ifNull()
+                        ? context.theme.colorScheme.onSurfaceVariant
+                            .withValues(alpha: 0.6)
+                        : null,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),

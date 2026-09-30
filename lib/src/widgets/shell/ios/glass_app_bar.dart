@@ -89,14 +89,12 @@ class _GlassAppBarDelegate extends SliverPersistentHeaderDelegate {
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
           decoration: BoxDecoration(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.7 + 0.2 * t)
-                : Colors.white.withValues(alpha: 0.85 + 0.1 * t),
+            // Use the theme surface so true-black + dynamic color keep
+            // working; alpha preserves the frosted-glass effect.
+            color: cs.surface.withValues(alpha: 0.72 + 0.18 * t),
             border: Border(
               bottom: BorderSide(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.08 * t)
-                    : Colors.black.withValues(alpha: 0.06 * t),
+                color: cs.outlineVariant.withValues(alpha: 0.5 * t + 0.1),
                 width: 0.5,
               ),
             ),
@@ -122,7 +120,7 @@ class _GlassAppBarDelegate extends SliverPersistentHeaderDelegate {
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.white : Colors.black,
+                              color: cs.onSurface,
                             ),
                           ),
                         ),
@@ -144,7 +142,7 @@ class _GlassAppBarDelegate extends SliverPersistentHeaderDelegate {
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w700,
-                          color: isDark ? Colors.white : Colors.black,
+                          color: cs.onSurface,
                           letterSpacing: -0.5,
                         ),
                       ),
@@ -161,7 +159,12 @@ class _GlassAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(_GlassAppBarDelegate old) =>
-      old.title != title || old.isDark != isDark;
+      old.title != title ||
+      old.isDark != isDark ||
+      old.topPad != topPad ||
+      old.cs != cs ||
+      old.largeTitle != largeTitle ||
+      old.actions.length != actions.length;
 }
 
 /// Glass card — frosted surface for cards, sheets, info panels
@@ -215,14 +218,12 @@ class GlassCard extends StatelessWidget {
 /// Frosted flexible space for [SliverAppBar] on iOS.
 Widget? glassAppBarFlexibleSpace(BuildContext context) {
   if (!isCupertinoPlatform) return null;
-  final isDark = context.isDarkMode;
+  final cs = context.theme.colorScheme;
   return ClipRect(
     child: BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
       child: Container(
-        color: isDark
-            ? Colors.black.withValues(alpha: 0.5)
-            : Colors.white.withValues(alpha: 0.72),
+        color: cs.surface.withValues(alpha: 0.72),
       ),
     ),
   );
@@ -253,7 +254,6 @@ PreferredSizeWidget adaptiveGlassAppBar({
     );
   }
 
-  final isDark = context.isDarkMode;
   final rawTop = MediaQuery.of(context).padding.top;
   final safeTop = math.max(rawTop, 38.0);
   final extraPadding = math.max(0.0, safeTop - rawTop);
@@ -275,16 +275,17 @@ PreferredSizeWidget adaptiveGlassAppBar({
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(
-              color: isDark
-                  ? Colors.black.withValues(alpha: 0.7)
-                  : Colors.white.withValues(alpha: 0.85),
+        flexibleSpace: Builder(builder: (flexContext) {
+          final fcs = Theme.of(flexContext).colorScheme;
+          return ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                color: fcs.surface.withValues(alpha: 0.78),
+              ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     ),
   );

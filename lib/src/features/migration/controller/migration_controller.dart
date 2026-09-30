@@ -88,7 +88,8 @@ Future<List<MangaDto>> migrationSourceQuickSearchMangaList(
   String sourceId, {
   String? query,
 }) async {
-  final rateLimiterQueue = ref.watch(rateLimitQueueProvider(query));
+  final rateLimiterQueue =
+      ref.watch(rateLimitQueueProvider('migration:$query'));
   final mangaPage = await rateLimiterQueue
       .add(() => ref.watch(sourceRepositoryProvider).fetchSourceManga(
             page: 1,

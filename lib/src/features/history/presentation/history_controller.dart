@@ -306,5 +306,11 @@ class HistoryHiddenChapterIds extends _$HistoryHiddenChapterIds
     final current = state ?? const [];
     if (!current.contains(chapterId)) return;
     update(current.where((id) => id != chapterId).toList());
+    ref.invalidate(readingHistoryProvider);
+  }
+
+  void clearHidden() {
+    update(const <int>[]);
+    ref.invalidate(readingHistoryProvider);
   }
 }

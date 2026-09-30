@@ -42,7 +42,12 @@ class TabletSplitLayout extends StatelessWidget {
         ),
         Expanded(
           child: showDetail
-              ? detail
+              ? Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1100),
+                    child: detail,
+                  ),
+                )
               : ColoredBox(
                   color: cs.surface,
                   child: Center(

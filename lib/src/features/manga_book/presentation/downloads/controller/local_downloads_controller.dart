@@ -87,7 +87,9 @@ class LocalChapterDownload extends _$LocalChapterDownload {
       ref.invalidate(chapterPagesProvider(chapterId: chapterId));
       ref.invalidate(localDownloadedChapterIdsProvider);
       ref.invalidate(offlineStorageSizeProvider);
-      state = LocalDownloadState.idle;
+      // Keep `finished` visible so the UI can show success; the button
+      // resets to idle on the next user action (retry/delete/new download).
+      return;
     } on DownloadCancelledException {
       if (_isStaleDownload(generation)) return;
       state = LocalDownloadState.idle;
@@ -112,7 +114,6 @@ class LocalChapterDownload extends _$LocalChapterDownload {
     // chapter. Bumping the generation also stops it from clobbering our state.
     _cancelRequested = true;
     _downloadGeneration++;
-    state = LocalDownloadState.downloading;
     try {
       final service = ref.read(localDownloadsServiceProvider);
       final manifest = await service.getOfflineManifest(chapterId);

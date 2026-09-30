@@ -38,6 +38,10 @@ class TrackerLoginDialog extends HookConsumerWidget {
               imageUrl: tracker.icon,
               width: 28,
               height: 28,
+              placeholder: (_, __) => const SizedBox.square(
+                dimension: 28,
+                child: ColoredBox(color: Color(0xFFE0E0E0)),
+              ),
               errorWidget: (_, __, ___) =>
                   const Icon(Icons.track_changes_rounded, size: 28),
             ),

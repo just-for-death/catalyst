@@ -49,6 +49,7 @@ class TrackerAuthNotifier extends _$TrackerAuthNotifier {
           .read(trackerRepositoryProvider)
           .loginTrackerCredentials(trackerId, username, password);
       ref.invalidate(trackersProvider);
+      ref.invalidate(mangaTrackRecordsProvider);
     });
   }
 
@@ -59,6 +60,7 @@ class TrackerAuthNotifier extends _$TrackerAuthNotifier {
           .read(trackerRepositoryProvider)
           .loginTrackerOAuth(trackerId, callbackUrl);
       ref.invalidate(trackersProvider);
+      ref.invalidate(mangaTrackRecordsProvider);
     });
   }
 
@@ -67,6 +69,7 @@ class TrackerAuthNotifier extends _$TrackerAuthNotifier {
     state = await AsyncValue.guard(() async {
       await ref.read(trackerRepositoryProvider).logoutTracker(trackerId);
       ref.invalidate(trackersProvider);
+      ref.invalidate(mangaTrackRecordsProvider);
     });
   }
 }

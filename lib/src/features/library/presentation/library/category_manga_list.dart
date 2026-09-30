@@ -187,14 +187,20 @@ class CategoryMangaList extends HookConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '${selected.length} selected',
-                          style: context.theme.textTheme.titleMedium?.copyWith(
-                            color: context.theme.colorScheme.onPrimaryContainer,
-                            fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Text(
+                            context.l10n.numSelected(selected.length),
+                            style: context.theme.textTheme.titleMedium?.copyWith(
+                              color: context
+                                  .theme.colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
                               icon: Icon(Icons.delete_outline_rounded, color: context.theme.colorScheme.error),

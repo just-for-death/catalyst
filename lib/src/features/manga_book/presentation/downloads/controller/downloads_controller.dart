@@ -88,8 +88,17 @@ List<int> downloadsChapterIds(Ref ref) {
 
 @riverpod
 AsyncValue<DownloaderState?> downloaderState(Ref ref) {
-  return ref.watch(downloadUpdatesProvider
-      .select((value) => value.copyWithData((data) => data?.state)));
+  // Merge REST snapshot (initial queue) with WS updates so the banner does
+  // not flash an error before the socket connects.
+  final rest = ref.watch(downloadStatusProvider);
+  final ws = ref.watch(
+      downloadUpdatesProvider.select((value) => value.copyWithData((data) => data?.state)));
+  if (ws.hasValue && ws.valueOrNull != null) return ws;
+  return rest.copyWithData((data) {
+    if (data == null) return null;
+    // Derive a coarse state from the queue when WS is not yet connected.
+    return data.queue.isNotEmpty ? DownloaderState.STARTED : DownloaderState.STOPPED;
+  });
 }
 
 @riverpod
@@ -101,7 +110,10 @@ bool showDownloadsFAB(Ref ref) {
       (data.updates.isNotBlank &&
           data.updates.any(
             (element) =>
-                element.download.state != DownloadState.ERROR ||
-                element.download.tries != 3,
+                element.download.state != DownloadState.FINISHED &&
+                (element.download.state == DownloadState.QUEUED ||
+                    element.download.state == DownloadState.DOWNLOADING ||
+                    (element.download.state == DownloadState.ERROR &&
+                        element.download.tries < 3)),
           ));
 }
